@@ -1,6 +1,6 @@
-# Multi-Agent Customer Support Bot
+# Multi-Agent Customer Support System
 
-Streamlit chat interface connected to a multi-agent Langflow workflow for customer support queries.
+Streamlit chat interface connected to a multi-agent Langflow workflow for enterprise customer support queries.
 
 ## Overview
 

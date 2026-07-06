@@ -1,45 +1,68 @@
-# Multi-agent-customer-support-bot-using-langflow
+# Multi-Agent Customer Support Bot
 
+Streamlit chat interface connected to a multi-agent Langflow workflow for customer support queries.
 
-# Customer Agent Chat using Langflow
+## Overview
 
-This project provides an interactive customer support chat interface built with Streamlit. It leverages a Langflow-powered API to simulate a conversational agent that answers customer queries by tapping into pre-defined FAQ data and structured customer support information. The app is designed to deliver a smooth chat experience with conversation history, easy-to-use messaging, and clear instructions for users.
+This project provides a Streamlit web UI that sends user messages to a hosted Langflow API and displays agent responses in a chat history panel. The Langflow flow (`Customer Support Langflow.json`) defines a multi-agent architecture: a routing agent delegates to specialized sub-agents for FAQ lookup, order lookup, and product lookup via AstraDB tools. Sample CSV files for products and orders are included as reference data for the flow. The Streamlit app handles message input, API calls, response parsing, and session-based chat history.
 
----
+## Tech Stack
 
-## Project Overview
+- Python
+- Streamlit
+- Langflow (hosted on Astra DataStax)
+- requests
+- python-dotenv
 
-- **Conversational AI Integration:**  
-  Uses Langflow’s API to process user messages and return responses from a virtual customer support agent. The agent can answer FAQs, provide order details, and address common customer queries.
+## Features
 
-- **Interactive Web Interface:**  
-  Built with Streamlit, the UI features a two-column layout: one for message input and one for displaying the chat history. The design is clean and responsive, suitable for desktop and mobile browsers.
+- Streamlit two-column UI: message input on the left, chat history on the right
+- Calls Langflow run API endpoint (`/api/v1/run/customer`) with chat input/output
+- Session-state chat history persisted across interactions within a session
+- Langflow flow with three Agent nodes:
+  - FAQ agent — answers frequently asked questions
+  - Order/product agent — looks up orders and aggregates product details via AstraDB tools
+  - Router agent — routes user inquiries to the appropriate sub-agent tools
+- Sample data files: `Sample Products.csv`, `Sample Orders.csv`
+- Exportable Langflow flow definition in `Customer Support Langflow.json`
 
-- **Data-Driven Responses:**  
-  The project includes supporting files such as CSVs for sample products and orders, a PDF containing company FAQs, and JSON files with customer support data. These assets help the agent provide accurate and contextually relevant answers.
+## Getting Started
 
-- **Environment & Security:**  
-  Environment variables (loaded via python-dotenv) securely store API tokens and configuration settings required to authenticate requests to the Langflow API.
+1. Install dependencies:
 
-- **Extensibility:**  
-  The code is modular and designed for easy customization. Users can modify the API endpoint, update conversation logic, and adjust the UI as needed.
+```bash
+pip install -r requirements.txt
+```
 
----
-Langflow : 
-![image](https://github.com/user-attachments/assets/39854ab9-cc84-4c95-a332-b25eea4f071d)
+2. Create a `.env` file with your Langflow API credentials:
 
-Application UI: 
-![image](https://github.com/user-attachments/assets/48d8bcfd-7902-439f-8fa0-2d16f2a9b7ce)
+```
+APPLICATION_TOKEN=your_langflow_application_token
+```
 
-Customization
-API Endpoint & Token:
-Modify the constants in main.py (e.g., BASE_API_URL, LANGFLOW_ID, FLOW_ID, APPLICATION_TOKEN, ENDPOINT) to point to a different Langflow instance or to update authentication credentials.
+Additional Langflow configuration (API URL, flow ID, endpoint name) is defined as constants in `main.py` (`BASE_API_URL`, `LANGFLOW_ID`, `FLOW_ID`, `ENDPOINT`).
 
-User Interface:
-Update the Streamlit layout, sidebar instructions, and chat history formatting in main.py to tailor the user experience.
+3. Import the Langflow flow (if running your own Langflow instance):
 
-Supporting Data:
-You can replace or update the sample CSV, PDF, and JSON files with your own data to further customize the responses provided by the agent.
+- Open Langflow and import `Customer Support Langflow.json`
+- Configure AstraDB tools and upload sample CSV/PDF data as referenced in the flow
+- Update the constants in `main.py` to match your deployment
 
-Extending Functionality:
-The project is modular and can be extended with additional features, such as saving conversation history to a database, adding more sophisticated NLP processing, or integrating with external CRM systems.
+4. Run the Streamlit app:
+
+```bash
+streamlit run main.py
+```
+
+The app opens in your browser at `http://localhost:8501`.
+
+## Project Structure
+
+```
+Multi-agent-customer-support-bot/
+├── main.py                          # Streamlit UI and Langflow API client
+├── requirements.txt                 # Python dependencies
+├── Customer Support Langflow.json   # Langflow multi-agent flow export
+├── Sample Products.csv              # Sample product catalog
+└── Sample Orders.csv                # Sample order records
+```
